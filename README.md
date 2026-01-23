@@ -1,0 +1,2 @@
+# DigitalOceanScripts.jl
+DigitalOceanScripts automates running Abaqus jobs on a DigitalOcean droplet. It generates a bash script that changes to a specified remote working directory and executes one or more Abaqus .inp models using a given number of CPUs. It also handles deployment by creating the remote directory (if needed) and uploading the run script and input files to the droplet via SSH/SCP.
