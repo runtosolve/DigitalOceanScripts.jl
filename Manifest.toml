@@ -2,7 +2,18 @@
 
 julia_version = "1.12.2"
 manifest_format = "2.0"
-project_hash = "8728d27e61876f727a7bba18edeb4e54329c0770"
+project_hash = "ff825d43c1f265b515573f4b43c3fca9febb62e3"
+
+[[deps.DigitalOceanScripts]]
+deps = ["Printf", "ReadWriteFind"]
+path = "."
+uuid = "cbb0b250-4dff-4a17-ad42-954ddce0ef99"
+version = "0.1.0"
+
+[[deps.Printf]]
+deps = ["Unicode"]
+uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+version = "1.11.0"
 
 [[deps.ReadWriteFind]]
 git-tree-sha1 = "a11abcee202164526e8bf11dc3227f48be775886"
@@ -10,3 +21,7 @@ repo-rev = "main"
 repo-url = "https://github.com/runtosolve/ReadWriteFind.jl.git"
 uuid = "6e1ff3fe-52ba-4718-9baa-43b124cc059a"
 version = "0.1.0"
+
+[[deps.Unicode]]
+uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
+version = "1.11.0"
