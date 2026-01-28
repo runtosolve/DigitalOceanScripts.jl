@@ -55,23 +55,23 @@ function download_dat_files(ip_address, remote_dir, local_dir)
 
     local_dat_path = joinpath(local_dir, "dat")
     
-
     if !isdir(local_dat_path)
         mkpath(local_dat_path)
-        println("Created local directory: $local_dat_path")
     end
 
 
-    remote_path = replace(remote_dir, "\\" => "/")
+    remote_source = "root@$(ip_address):$(remote_dir)/*.dat"
     
     println("Downloading .dat files from $ip_address...")
 
     try
 
-        run(`scp -C root@$ip_address:$remote_path/*.dat $local_dat_path`)
-        println("Download complete! Files stored in: $local_dat_path")
+        run(`scp -C $remote_source $local_dat_path`)
+        
+        println("Download complete!")
+        
     catch e
-        @error "Download failed. Check your SSH connection or if .dat files exist." exception=e
+        @error "Download failed." exception=e
     end
 end
 
