@@ -75,4 +75,28 @@ function download_dat_files(ip_address, remote_dir, local_dir)
     end
 end
 
+function download_files(ip_address, remote_dir, local_dir, file_extension)
+
+    local_file_path = joinpath(local_dir, file_extension)
+    
+    if !isdir(local_file_path)
+        mkpath(local_file_path)
+    end
+
+
+    remote_source = "root@$(ip_address):$(remote_dir)/*.$file_extension"
+    
+    println("Downloading .$file_extension files from $ip_address...")
+
+    try
+
+        run(`scp -C $remote_source $local_file_path`)
+        
+        println("Download complete!")
+        
+    catch e
+        @error "Download failed." exception=e
+    end
+end
+
 end
