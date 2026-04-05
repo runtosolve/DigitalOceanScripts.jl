@@ -2,23 +2,39 @@ module DigitalOceanScripts
 
 using ReadWriteFind, Printf
 
-function generate_droplet_script(remote_working_directory, model_names, local_working_directory, bash_filename, cpus)
+function generate_droplet_script(remote_working_directory, model_names, local_working_directory, bash_filename, cpus; add_queue_logic=false)
     lines = []
 
     push!(lines, "#!/bin/bash")
     push!(lines, "# Generated for DigitalOcean Droplet")
-    
-   
     push!(lines, @sprintf "cd %s" remote_working_directory)
+
+    if add_queue_logic
+        add_submission_to_queue!(lines)
+    end
 
     # Abaqus execution lines
     for i in eachindex(model_names)
-        
         line = "abaqus job=" * model_names[i] * " cpus=$cpus" * " interactive"
         push!(lines, line)
     end
 
     ReadWriteFind.write_file(joinpath(local_working_directory, bash_filename), lines)
+end
+
+function add_submission_to_queue!(lines)
+    push!(lines, "")
+    push!(lines, "# --- Queue logic: wait if another Abaqus job is running ---")
+    push!(lines, "CID_FILE=\$(find ~ -name \"*.cid\" 2>/dev/null | head -1)")
+    push!(lines, "RUNNING_PID=\$([ -n \"\$CID_FILE\" ] && head -1 \"\$CID_FILE\")")
+    push!(lines, "")
+    push!(lines, "if [ -n \"\$RUNNING_PID\" ] && kill -0 \$RUNNING_PID 2>/dev/null; then")
+    push!(lines, "    echo \"Job running (PID \$RUNNING_PID). Waiting in queue...\"")
+    push!(lines, "    while kill -0 \$RUNNING_PID 2>/dev/null; do sleep 60; done")
+    push!(lines, "    echo \"Previous job done. Starting now...\"")
+    push!(lines, "fi")
+    push!(lines, "# --- End queue logic ---")
+    push!(lines, "")
 end
 
 
