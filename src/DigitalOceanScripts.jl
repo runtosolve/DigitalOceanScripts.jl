@@ -28,6 +28,10 @@ function generate_droplet_script_with_UEL(remote_working_directory, model_names,
     push!(lines, "#!/bin/bash")
     push!(lines, "# Generated for DigitalOcean Droplet")
     push!(lines, @sprintf "cd %s" remote_working_directory)
+    # Droplets typically don't have a licensed Intel Fortran compiler installed.
+    # This tells Abaqus's own lnx86_64.env to compile/link user subroutines with
+    # gfortran instead of ifort (a switch SIMULIA ships for grid/cloud nodes).
+    push!(lines, "export ABQ_USUB_GFORTRAN=1")
 
     if add_queue_logic
         add_submission_to_queue!(lines)
