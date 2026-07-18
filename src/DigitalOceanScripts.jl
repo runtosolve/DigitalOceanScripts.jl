@@ -32,6 +32,12 @@ function generate_droplet_script_with_UEL(remote_working_directory, model_names,
     # This tells Abaqus's own lnx86_64.env to compile/link user subroutines with
     # gfortran instead of ifort (a switch SIMULIA ships for grid/cloud nodes).
     push!(lines, "export ABQ_USUB_GFORTRAN=1")
+    # The default open-file-descriptor limit (often 1024) can be exhausted on
+    # long, contact-heavy analyses - Abaqus's own internal file handles plus any
+    # per-element UEL output files can approach that ceiling over many increments.
+    # Raise it to the session's hard limit (safe - doesn't require root/sysadmin
+    # config changes, only raises up to what's already permitted).
+    push!(lines, "ulimit -n \$(ulimit -Hn)")
 
     if add_queue_logic
         add_submission_to_queue!(lines)
